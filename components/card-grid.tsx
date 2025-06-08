@@ -119,7 +119,7 @@ export function CardGrid({ onCardSelect, settings, language }: CardGridProps) {
               ${
                 settings.highContrast
                   ? "border-2 border-white hover:bg-white hover:text-black"
-                  : "hover:bg-blue-100 border-2 border-transparent hover:border-blue-300"
+                  : "hover:bg-blue-100 border-2 border-transparent hover:border-blue-300 bg-white shadow-sm rounded-xl"
               }
               ${settings.autismFriendlyMode ? "" : "transition-all duration-200 transform hover:scale-105"}
               ${settings.touchMode ? "min-h-[60px]" : ""}
@@ -127,12 +127,22 @@ export function CardGrid({ onCardSelect, settings, language }: CardGridProps) {
             `}
           >
             {shouldShowIcon && (
-              <span className={`${getIconSize()}`} role="img" aria-label={card.label}>
+              <span
+                className={`${getIconSize()} ${settings.highContrast ? "" : "drop-shadow-sm"}`}
+                role="img"
+                aria-label={card.label}
+              >
                 {card.icon}
               </span>
             )}
             {shouldShowText && (
-              <span className={`font-medium text-center leading-tight ${getTextSize()}`}>{card.label}</span>
+              <span
+                className={`font-medium text-center leading-tight ${getTextSize()} ${
+                  settings.highContrast ? "" : "text-gray-700"
+                }`}
+              >
+                {card.label}
+              </span>
             )}
           </Button>
         ))}
