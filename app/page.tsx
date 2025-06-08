@@ -10,7 +10,7 @@ import { CaregiverLogin } from "@/components/caregiver-login"
 import { CaregiverDashboard } from "@/components/caregiver-dashboard"
 import { CaregiverSettings } from "@/components/caregiver-settings"
 import { Button } from "@/components/ui/button"
-import { SettingsIcon, Volume2, Shield } from "lucide-react"
+import { SettingsIcon, Volume2, User } from "lucide-react"
 import { useLocalStorage } from "@/hooks/use-local-storage"
 import { useAccessibility } from "@/hooks/use-accessibility"
 import { useCustomCards } from "@/hooks/use-custom-cards"
@@ -209,14 +209,18 @@ export default function SpeakEasyApp() {
               SpeakEasy
             </h1>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
+            {/* More prominent caregiver button */}
             <Button
-              variant={settings.highContrast ? "outline" : "ghost"}
-              size="lg"
               onClick={() => setCurrentScreen("caregiver-login")}
-              className={`${getButtonSize()}`}
+              className={`flex items-center gap-2 px-4 ${
+                settings.highContrast
+                  ? "bg-white text-black hover:bg-gray-200 border-2 border-white"
+                  : "bg-blue-600 text-white hover:bg-blue-700"
+              }`}
             >
-              <Shield className="w-6 h-6" />
+              <User className="w-5 h-5" />
+              <span className="hidden sm:inline">{isSerbian ? "Старатељ" : "Caregiver"}</span>
             </Button>
             <Button
               variant={settings.highContrast ? "outline" : "ghost"}
