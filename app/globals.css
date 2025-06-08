@@ -1,0 +1,266 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Hide scrollbar for horizontal tab navigation */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* High Contrast Mode */
+.high-contrast {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 0%;
+  --card-foreground: 0 0% 100%;
+  --border: 0 0% 100%;
+  --input: 0 0% 10%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 20%;
+  --secondary-foreground: 0 0% 100%;
+}
+
+.high-contrast * {
+  border-color: white !important;
+}
+
+.high-contrast button {
+  border: 2px solid white !important;
+  color: white !important;
+}
+
+.high-contrast button:hover {
+  background-color: white !important;
+  color: black !important;
+}
+
+.high-contrast input,
+.high-contrast select,
+.high-contrast [role="combobox"] {
+  border: 2px solid white !important;
+  background-color: black !important;
+  color: white !important;
+}
+
+.high-contrast [data-state="open"] {
+  background-color: black !important;
+  color: white !important;
+  border: 2px solid white !important;
+}
+
+/* Select dropdown styling for high contrast */
+.high-contrast [role="option"] {
+  background-color: black !important;
+  color: white !important;
+}
+
+.high-contrast [role="option"]:hover,
+.high-contrast [role="option"][data-highlighted] {
+  background-color: white !important;
+  color: black !important;
+}
+
+/* Switch component styling for high contrast */
+.high-contrast [role="switch"] {
+  border: 2px solid white !important;
+}
+
+.high-contrast [role="switch"][data-state="checked"] {
+  background-color: white !important;
+}
+
+.high-contrast [role="switch"][data-state="unchecked"] {
+  background-color: black !important;
+}
+
+/* Autism-Friendly Mode */
+.autism-friendly {
+  animation: none !important;
+  transition: none !important;
+}
+
+.autism-friendly * {
+  animation: none !important;
+  transition: none !important;
+}
+
+.autism-friendly button:hover {
+  transform: none !important;
+}
+
+/* Touch Mode - Larger touch targets */
+.touch-mode button {
+  min-height: 48px !important;
+  min-width: 48px !important;
+  padding: 12px !important;
+}
+
+.touch-mode .card-button {
+  min-height: 80px !important;
+  padding: 16px !important;
+}
+
+/* Font Size Classes */
+.text-size-small {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-size-medium {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-size-large {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-size-extra-large {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .autism-friendly * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode improvements */
+@media (prefers-contrast: high) {
+  .high-contrast {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --border: 0 0% 100%;
+  }
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 2px !important;
+}
+
+.high-contrast button:focus-visible,
+.high-contrast input:focus-visible,
+.high-contrast select:focus-visible {
+  outline: 3px solid white !important;
+}
+
+/* Switch scanning mode - highlight focusable elements */
+.switch-scanning button:focus,
+.switch-scanning input:focus,
+.switch-scanning select:focus {
+  background-color: yellow !important;
+  color: black !important;
+  outline: 3px solid red !important;
+}
+
+/* Reading assistance - larger line height and spacing */
+.reading-assistance {
+  line-height: 1.8 !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.1em !important;
+}
+
+/* Eye tracking mode - larger focus indicators */
+.eye-tracking button:hover,
+.eye-tracking .card-button:hover {
+  outline: 4px solid #2563eb !important;
+  outline-offset: 4px !important;
+  z-index: 10 !important;
+}
+
+/* Keyboard navigation improvements */
+.keyboard-navigation {
+  /* Enhanced focus styles for keyboard users */
+}
+
+.keyboard-navigation button:focus,
+.keyboard-navigation input:focus,
+.keyboard-navigation select:focus {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2) !important;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .touch-mode button {
+    min-height: 56px !important;
+    padding: 16px !important;
+  }
+
+  .touch-mode .card-button {
+    min-height: 88px !important;
+    padding: 20px !important;
+  }
+}
