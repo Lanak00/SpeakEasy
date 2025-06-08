@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Home, Lightbulb, LightbulbOff } from "lucide-react"
 import type { Card } from "@/types"
+import { speak } from "@/utils/speech-utils"
 
 interface SmartHomeDevice {
   id: string
@@ -41,8 +42,34 @@ export function SmartHomeCards({ onCardSelect, settings, language }: SmartHomeCa
   ])
 
   const toggleDevice = (deviceId: string) => {
-    // Simply toggle the visual state without API call
-    setDevices((prev) => prev.map((d) => (d.id === deviceId ? { ...d, state: !d.state } : d)))
+    const device = devices.find((d) => d.id === deviceId)
+    if (!device) return
+
+    // Toggle the visual state
+    const newState = !device.state
+    setDevices((prev) => prev.map((d) => (d.id === deviceId ? { ...d, state: newState } : d)))
+
+    // Announce the action with text-to-speech
+    if (settings.voiceEnabled !== false) {
+      const announcement = getSmartHomeAnnouncement(device.name, newState, language)
+      speak({
+        text: announcement,
+        language: language || "en",
+        onError: (error) => {
+          console.error("Smart home TTS error:", error)
+        },
+      })
+    }
+  }
+
+  const getSmartHomeAnnouncement = (deviceName: string, newState: boolean, lang: string) => {
+    if (lang === "sr") {
+      const action = newState ? "укључено" : "искључено"
+      return `${deviceName} светло ${action}`
+    } else {
+      const action = newState ? "turned on" : "turned off"
+      return `${deviceName} light ${action}`
+    }
   }
 
   const getTextSize = () => {
