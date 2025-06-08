@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Home, Loader2, Lightbulb, LightbulbOff } from "lucide-react"
+import { Home, Lightbulb, LightbulbOff } from "lucide-react"
 import type { Card } from "@/types"
 
 interface SmartHomeDevice {
@@ -40,51 +40,9 @@ export function SmartHomeCards({ onCardSelect, settings, language }: SmartHomeCa
     },
   ])
 
-  const [loadingDevices, setLoadingDevices] = useState<Set<string>>(new Set())
-
-  const toggleDevice = async (device: SmartHomeDevice) => {
-    setLoadingDevices((prev) => new Set(prev).add(device.id))
-
-    try {
-      const response = await fetch("/api/smart-home/control", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          deviceId: device.id,
-          action: device.state ? "off" : "on",
-          deviceType: "light",
-          room: device.room,
-        }),
-      })
-
-      const result = await response.json()
-
-      if (response.ok && result.success) {
-        setDevices((prev) => prev.map((d) => (d.id === device.id ? { ...d, state: !d.state } : d)))
-      } else {
-        console.error("Smart home API error:", result)
-        alert(
-          language === "sr"
-            ? `Грешка при контроли уређаја: ${result.error || "Непозната грешка"}`
-            : `Error controlling device: ${result.error || "Unknown error"}`,
-        )
-      }
-    } catch (error) {
-      console.error("Smart home control error:", error)
-      alert(
-        language === "sr"
-          ? "Грешка мреже. Проверите да ли је уређај доступан."
-          : "Network error. Please check if the device is available.",
-      )
-    } finally {
-      setLoadingDevices((prev) => {
-        const newSet = new Set(prev)
-        newSet.delete(device.id)
-        return newSet
-      })
-    }
+  const toggleDevice = (deviceId: string) => {
+    // Simply toggle the visual state without API call
+    setDevices((prev) => prev.map((d) => (d.id === deviceId ? { ...d, state: !d.state } : d)))
   }
 
   const getTextSize = () => {
@@ -151,90 +109,69 @@ export function SmartHomeCards({ onCardSelect, settings, language }: SmartHomeCa
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {devices.map((device) => {
-          const isLoading = loadingDevices.has(device.id)
-          return (
-            <Button
-              key={device.id}
-              onClick={() => toggleDevice(device)}
-              disabled={isLoading}
-              variant="ghost"
-              className={`
-                relative h-20 p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-2
-                ${settings.autismFriendlyMode ? "" : "transition-all duration-200 hover:scale-[1.02]"}
-                ${
-                  device.state
-                    ? settings.highContrast
-                      ? "bg-gray-800 border-white text-white"
-                      : "bg-gradient-to-br from-amber-100 to-yellow-200 border-yellow-300 text-amber-900 shadow-md"
-                    : settings.highContrast
-                      ? "bg-gray-900 border-gray-600 text-gray-300"
-                      : "bg-white border-gray-200 text-gray-700 shadow-sm hover:shadow-md"
-                }
-              `}
-            >
-              {/* Subtle glow for ON state */}
-              {device.state && !settings.highContrast && (
-                <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-amber-500/10 rounded-xl" />
-              )}
+        {devices.map((device) => (
+          <Button
+            key={device.id}
+            onClick={() => toggleDevice(device.id)}
+            variant="ghost"
+            className={`
+              relative h-20 p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-2
+              ${settings.autismFriendlyMode ? "" : "transition-all duration-200 hover:scale-[1.02]"}
+              ${
+                device.state
+                  ? settings.highContrast
+                    ? "bg-gray-800 border-white text-white"
+                    : "bg-gradient-to-br from-amber-100 to-yellow-200 border-yellow-300 text-amber-900 shadow-md"
+                  : settings.highContrast
+                    ? "bg-gray-900 border-gray-600 text-gray-300"
+                    : "bg-white border-gray-200 text-gray-700 shadow-sm hover:shadow-md"
+              }
+            `}
+          >
+            {/* Subtle glow for ON state */}
+            {device.state && !settings.highContrast && (
+              <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 to-amber-500/10 rounded-xl" />
+            )}
 
-              {isLoading ? (
+            {/* Room icon and light status */}
+            <div className="flex items-center gap-2">
+              {shouldShowIcon && (
                 <>
-                  <Loader2 className={`${getIconSize()} animate-spin`} />
-                  {shouldShowText && (
-                    <span className={`font-medium ${textSizes.state}`}>
-                      {language === "sr" ? "Контролишем..." : "Controlling..."}
-                    </span>
-                  )}
-                </>
-              ) : (
-                <>
-                  {/* Room icon and light status */}
-                  <div className="flex items-center gap-2">
-                    {shouldShowIcon && (
-                      <>
-                        <span className="text-lg" role="img" aria-label={device.name}>
-                          {device.icon}
-                        </span>
-                        {device.state ? (
-                          <Lightbulb
-                            className={`w-4 h-4 ${settings.highContrast ? "text-yellow-300" : "text-amber-600"}`}
-                          />
-                        ) : (
-                          <LightbulbOff
-                            className={`w-4 h-4 ${settings.highContrast ? "text-gray-500" : "text-gray-400"}`}
-                          />
-                        )}
-                      </>
-                    )}
-                  </div>
-
-                  {shouldShowText && (
-                    <div className="text-center">
-                      <div className={`font-semibold ${textSizes.state} leading-tight`}>{device.name}</div>
-                      <div
-                        className={`
-                          font-bold ${textSizes.state}
-                          ${
-                            device.state
-                              ? settings.highContrast
-                                ? "text-green-300"
-                                : "text-green-600"
-                              : settings.highContrast
-                                ? "text-red-300"
-                                : "text-red-500"
-                          }
-                        `}
-                      >
-                        {getStateText(device)}
-                      </div>
-                    </div>
+                  <span className="text-lg" role="img" aria-label={device.name}>
+                    {device.icon}
+                  </span>
+                  {device.state ? (
+                    <Lightbulb className={`w-4 h-4 ${settings.highContrast ? "text-yellow-300" : "text-amber-600"}`} />
+                  ) : (
+                    <LightbulbOff className={`w-4 h-4 ${settings.highContrast ? "text-gray-500" : "text-gray-400"}`} />
                   )}
                 </>
               )}
-            </Button>
-          )
-        })}
+            </div>
+
+            {shouldShowText && (
+              <div className="text-center">
+                <div className={`font-semibold ${textSizes.state} leading-tight`}>{device.name}</div>
+                <div
+                  className={`
+                    font-bold ${textSizes.state}
+                    ${
+                      device.state
+                        ? settings.highContrast
+                          ? "text-green-300"
+                          : "text-green-600"
+                        : settings.highContrast
+                          ? "text-red-300"
+                          : "text-red-500"
+                    }
+                  `}
+                >
+                  {getStateText(device)}
+                </div>
+              </div>
+            )}
+          </Button>
+        ))}
       </div>
     </div>
   )
